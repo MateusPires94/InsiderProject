@@ -16,4 +16,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Ignorar coverage
 .coverage
+*.coverage
