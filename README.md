@@ -42,6 +42,13 @@ Para rodar os testes dentro do container:
 ```bash
 make test
 ```
+
+ou, para ter a cobertura dos testes:
+
+```bash
+make test-cov
+```
+
 ## 🐳 Logando um Modelo
 
 Antes de começar suas predições, você precisa logar um modelo no MLflow:
