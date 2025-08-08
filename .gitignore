@@ -1,0 +1,17 @@
+# Ignorar arquivos de ambiente
+.env
+*.env
+
+# Ignorar pasta de logs
+logs/
+
+# Caches do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+
+# Bytecode compilado
+*.py[cod]
+*$py.class

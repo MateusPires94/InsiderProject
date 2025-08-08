@@ -1,0 +1,172 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: mlflow_postgres
+    environment:
+      POSTGRES_USER: mlflow
+      POSTGRES_PASSWORD: mlflow
+      POSTGRES_DB: mlflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - mlflow-network
+
+  minio:
+    image: minio/minio
+    container_name: mlflow_minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # MinIO Console
+    volumes:
+      - minio_data:/data
+    networks:
+      - mlflow-network
+
+  mlflow:
+    build: ./mlflow-docker
+    container_name: mlflow_server
+    depends_on:
+      - postgres
+      - minio
+    env_file:
+      - ./mlflow-docker/.env
+    ports:
+      - "5000:5000"
+    networks:
+      - mlflow-network
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mlflow-network
+
+  mongo-express:
+    image: mongo-express:1.0.0-alpha.4
+    container_name: mongo_express
+    depends_on:
+      - mongodb
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    ports:
+      - "8081:8081"
+    networks:
+      - mlflow-network
+
+  fastapi:
+    build: ./fastapi
+    restart: unless-stopped
+    container_name: fastapi
+    depends_on:
+      - mlflow
+      - mongodb
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./fastapi:/app
+      - ./logs:/var/log  # Para persistir logs
+    env_file:
+      - ./fastapi/.env
+    networks:
+      - mlflow-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - mlflow-network
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: unless-stopped
+    networks:
+      - mlflow-network
+    depends_on:
+      - prometheus
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+    networks:
+      - mlflow-network
+    depends_on:
+      - prometheus
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    networks:
+      - mlflow-network
+
+  promtail:
+    image: grafana/promtail:2.9.3
+    container_name: promtail
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/promtail.yaml
+      - ./logs:/var/log 
+    command: -config.file=/etc/promtail/promtail.yaml
+    networks:
+      - mlflow-network
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./fastapi/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./fastapi/grafana/provisioning/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - mlflow-network
+
+
+
+networks:
+  mlflow-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  minio_data:
+  grafana-storage:
+  mongo_data:
