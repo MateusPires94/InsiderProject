@@ -6,10 +6,10 @@ Este projeto implementa uma API de predição utilizando **FastAPI**, com versio
 
 ![Arquitetura do Modelo](docs/model_arquitecture.drawio.png)
 
-> Acesse o Grafana(http://localhost:3000) para dashboards de monitoramento.
-> Acesse o MongoExpress(http://localhost:8081) para visualizar o histórico de predições.
-> Acesse o MLflow(http://localhost:5000) para visualizar os modelos logados e registrá-los manualmente adicionando o alias "champion" para o modelo vencedor
-> Acesse o FastAPI(http://localhost:8000) para realizar predições, pegar histórico e carregar novos modelos
+- Acesse o Grafana(http://localhost:3000) para dashboards de monitoramento.
+- Acesse o MongoExpress(http://localhost:8081) para visualizar o histórico de predições.
+- Acesse o MLflow(http://localhost:5000) para visualizar os modelos logados e registrá-los manualmente adicionando o alias "champion" para o modelo vencedor
+- Acesse o FastAPI(http://localhost:8000) para realizar predições, pegar histórico e carregar novos modelos
 
 ## 🐳 Como rodar localmente com Docker
 
@@ -30,9 +30,9 @@ make up
 
 3. Configure o Grafana:
 
-> Entre no Grafana(http://localhost:3000)
-> Estabeleça a conexão com o Prometheus (url:http://prometheus:9090, name: Prometheus)
-> Estabeleça a conexão com o Loki (url:http://loki:3100, name: Loki)
+- Entre no Grafana(http://localhost:3000)
+- Estabeleça a conexão com o Prometheus (url:http://prometheus:9090, name: Prometheus)
+- Estabeleça a conexão com o Loki (url:http://loki:3100, name: Loki)
 
 
 ## 🔬 Rodando os testes
@@ -46,9 +46,9 @@ make test
 
 Antes de começar suas predições, você precisa logar um modelo no MLflow:
 
-> Utilize um JupiterLab local.
-> Log um modelo vide exemplo em Notebooks/titanic.ipynb.
-> Entre no MLflow(http://localhost:5000) e registre esse modelo. Em seguida, entre na versão registrada e coloque o Alias "champion".
+- Utilize um JupiterLab local.
+- Log um modelo vide exemplo em Notebooks/titanic.ipynb.
+- Entre no MLflow(http://localhost:5000) e registre esse modelo. Em seguida, entre na versão registrada e coloque o Alias "champion".
 
 ## Integração Contínua
 
