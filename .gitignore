@@ -15,3 +15,5 @@ __pycache__/
 # Bytecode compilado
 *.py[cod]
 *$py.class
+
+.coverage
