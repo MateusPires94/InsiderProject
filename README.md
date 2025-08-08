@@ -49,13 +49,33 @@ ou, para ter a cobertura dos testes:
 make test-cov
 ```
 
-## 🐳 Logando um Modelo
+## Logando um Modelo
 
 Antes de começar suas predições, você precisa logar um modelo no MLflow:
 
 - Utilize um JupiterLab local.
 - Log um modelo vide exemplo em Notebooks/titanic.ipynb.
 - Entre no MLflow(http://localhost:5000) e registre esse modelo. Em seguida, entre na versão registrada e coloque o Alias "champion".
+
+## Exemplo de Payload de Predição para o modelo Titanic
+
+Entrada:
+
+```
+{
+  "inputs": [
+    {"Pclass":1,"Name":"Mitkoff, Mr. Mito","Sex":"female","Age":null,"SibSp":2,"Parch":0,"Fare":7.8958,"Embarked":"S"}
+  ]
+}
+```
+Saida:
+```
+{
+  "predictions": [
+    1
+  ]
+}
+```
 
 ## Integração Contínua
 
