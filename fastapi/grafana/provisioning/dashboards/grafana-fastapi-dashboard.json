@@ -499,7 +499,53 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{level=\"WARNING\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{level=\"INFO\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{level=\"ERROR\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -533,7 +579,10 @@
       "pluginVersion": "12.1.0",
       "targets": [
         {
+          "direction": "backward",
+          "editorMode": "code",
           "expr": "sum(count_over_time({job=\"fastapi\"}[$__interval])) by (level)",
+          "queryType": "range",
           "refId": "I"
         }
       ],
@@ -596,5 +645,5 @@
   "timezone": "browser",
   "title": "FastAPI MLflow Monitoring",
   "uid": "293a8fa1-6e1d-4ad7-8d54-e30fc6234e41",
-  "version": 6
+  "version": 8
 }
